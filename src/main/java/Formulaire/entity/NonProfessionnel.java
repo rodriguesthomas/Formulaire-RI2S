@@ -1,6 +1,10 @@
 package Formulaire.entity;
 
+import java.util.List;
+
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,9 +32,11 @@ public class NonProfessionnel {
     @JoinColumn(name = "id_utilisateur", nullable = false)
     private Utilisateur utilisateur;
 
-    @Enumerated(EnumType.STRING) 
-    @Column(nullable = false)
-    private MomentJournee momentJournee;
+    @ElementCollection(targetClass = MomentJournee.class)
+    @CollectionTable(name = "utilisateur_moments", joinColumns = @JoinColumn(name = "id_utilisateur"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "moment")
+    private List<MomentJournee> momentsJournee;
 
     @NonNull
     @Column(nullable = false)

@@ -34,6 +34,7 @@ public class Experimentation {
 
     private Date dateDebutExpe;
     private Date dateFinExpe;
+    private String urlImage;
 
     // Simplifié en String pour éviter les erreurs de cast SQL VARBINARY
     @ElementCollection

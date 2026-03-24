@@ -1,8 +1,20 @@
 package Formulaire.entity;
 
-import lombok.*;
-import jakarta.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Table(name = "professionnel")
@@ -31,6 +43,6 @@ public class Professionnel {
     private String participationExpe;
 
     @OneToMany(mappedBy = "professionnel", cascade = CascadeType.ALL)
-    private ArrayList<NonProfessionnel> contactsNonPro = new ArrayList<>();
+    private List<NonProfessionnel> contactsNonPro = new ArrayList<>();
 
 }
