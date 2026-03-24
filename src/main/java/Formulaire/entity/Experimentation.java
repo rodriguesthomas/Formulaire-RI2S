@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "experimentation") // minuscule pour être raccord avec SQL
+@Table(name = "experimentation") 
 @Data
 @NoArgsConstructor
 public class Experimentation {
