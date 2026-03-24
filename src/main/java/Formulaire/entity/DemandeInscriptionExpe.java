@@ -1,9 +1,20 @@
 package Formulaire.entity;
 
 import java.time.LocalDateTime;
-import Formulaire.entity.Role;
-import jakarta.persistence.*;
-import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "demande_inscription_expe")
@@ -15,8 +26,9 @@ public class DemandeInscriptionExpe {
     private Long idDemandeInscriptionExpe;
 
     @ManyToOne
-    @JoinColumn(name = "id_utilisateur", nullable = false)
-    private Utilisateur utilisateur;
+@JoinColumn(name = "id_utilisateur", nullable = false)
+@JsonBackReference // <--- AJOUTE CECI
+private Utilisateur utilisateur;
 
     @ManyToOne
     @JoinColumn(name = "id_experimentation", nullable = false)

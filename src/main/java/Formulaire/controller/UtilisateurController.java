@@ -1,36 +1,52 @@
 package Formulaire.controller;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import Formulaire.DTO.InscriptionRequest;
+import Formulaire.entity.Role;
 import Formulaire.entity.Utilisateur;
 import Formulaire.service.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/utilisateurs")
-@CrossOrigin(origins = "*") 
 public class UtilisateurController {
 
-    @Autowired
-    private UtilisateurService utilisateurService;
+    @Autowired private UtilisateurService utilisateurService;
 
+    // Pour le formulaire d'un NOUVEAU
     @PostMapping("/inscription")
     public ResponseEntity<?> inscrire(@RequestBody InscriptionRequest request) {
-        try {
-            Utilisateur savedUser = utilisateurService.inscrireUtilisateur(
-                    request.getUtilisateur(),
-                    request.getProfilPro(),
-                    request.getProfilNonPro(),
-                    request.getDemandeExpe() // <--- AJOUTE JUSTE CETTE LIGNE ICI
-            );
-            
-            return ResponseEntity.ok(savedUser);
-            
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Une erreur est survenue lors de l'inscription.");
+        return ResponseEntity.ok(utilisateurService.inscrireUtilisateur(
+            request.getUtilisateur(), request.getProfilPro(), request.getProfilNonPro(), request.getDemandeExpe()));
+    }
+
+    // Pour ajouter une mission à un ANCIEN via son ID
+    @PostMapping("/{id}/inscriptions")
+    public ResponseEntity<?> ajouterMission(@PathVariable Long id, @RequestParam Long idExpe, @RequestParam Role role) {
+        return ResponseEntity.ok(utilisateurService.ajouterMissionAUtilisateur(id, idExpe, role));
+    }
+
+    // Pour que le Front sache si l'utilisateur existe
+    @GetMapping("/verification")
+    public ResponseEntity<?> verifier(@RequestParam String nom, @RequestParam String prenom, 
+                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateNaissance) {
+        Optional<Utilisateur> user = utilisateurService.verifierExistence(nom, prenom, dateNaissance);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(Map.of("existe", true, "id", user.get().getIdUtilisateur()));
         }
+        return ResponseEntity.ok(Map.of("existe", false));
     }
 }

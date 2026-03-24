@@ -1,7 +1,22 @@
 package Formulaire.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Table(name = "utilisateur")
@@ -33,6 +48,9 @@ public class Utilisateur {
     @Column(nullable = false)
     private Boolean consentement;
 
+    @NonNull
+    @Column(nullable = false)
+    private Date dateNaissance;
 
     @OneToOne(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     private Professionnel profilPro;
@@ -41,5 +59,6 @@ public class Utilisateur {
     private NonProfessionnel profilNonPro;
 
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
-    private java.util.List<DemandeInscriptionExpe> demandesExperimentations;
+@JsonManagedReference
+private List<DemandeInscriptionExpe> demandesExperimentations;
 }

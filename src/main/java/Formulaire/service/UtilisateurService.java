@@ -1,80 +1,71 @@
 package Formulaire.service;
 
-import Formulaire.DTO.InscriptionRequest.DemandeExpeDTO;
-import Formulaire.entity.*;
-import Formulaire.repository.*;
-import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import Formulaire.DTO.InscriptionRequest.DemandeExpeDTO;
+import Formulaire.entity.DemandeInscriptionExpe;
+import Formulaire.entity.Experimentation;
+import Formulaire.entity.NonProfessionnel;
+import Formulaire.entity.Professionnel;
+import Formulaire.entity.Role;
+import Formulaire.entity.Statut;
+import Formulaire.entity.Utilisateur;
+import Formulaire.repository.DemandeInscriptionExpeRepository;
+import Formulaire.repository.ExperimentationRepository;
+import Formulaire.repository.NonProfessionnelRepository;
+import Formulaire.repository.ProfessionnelRepository;
+import Formulaire.repository.UtilisateurRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UtilisateurService {
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    @Autowired private UtilisateurRepository utilisateurRepository;
+    @Autowired private ProfessionnelRepository professionnelRepository;
+    @Autowired private NonProfessionnelRepository nonProfessionnelRepository;
+    @Autowired private ExperimentationRepository experimentationRepository;
+    @Autowired private DemandeInscriptionExpeRepository demandeRepository;
 
-    @Autowired
-    private ProfessionnelRepository professionnelRepository;
-
-    @Autowired
-    private NonProfessionnelRepository nonProfessionnelRepository;
-
-    // --- NOUVEAUX REPOSITORIES ---
-    @Autowired
-    private ExperimentationRepository experimentationRepository;
-
-    @Autowired
-    private DemandeInscriptionExpeRepository demandeRepository;
-
+    // ACTION A : Création complète (Nouveau profil)
     @Transactional
-    public Utilisateur inscrireUtilisateur(Utilisateur utilisateur, 
-                                           Professionnel profilPro, 
-                                           NonProfessionnel profilNonPro, 
-                                           DemandeExpeDTO demandeExpe) { 
-        
+    public Utilisateur inscrireUtilisateur(Utilisateur utilisateur, Professionnel pro, NonProfessionnel nonPro, DemandeExpeDTO demandeDto) {
+        // Sauvegarde de l'utilisateur
+        Utilisateur savedUser = utilisateurRepository.save(utilisateur);
 
-        if (profilPro == null && profilNonPro == null) {
-            throw new IllegalArgumentException("Un utilisateur doit avoir au moins un profil (Professionnel ou Non-Professionnel).");
+        // Liaison des profils
+        if (pro != null) { pro.setUtilisateur(savedUser); professionnelRepository.save(pro); }
+        if (nonPro != null) { nonPro.setUtilisateur(savedUser); nonProfessionnelRepository.save(nonPro); }
+
+        // Ajout de la première mission si présente
+        if (demandeDto != null && demandeDto.getIdExperimentation() != null) {
+            ajouterMissionAUtilisateur(savedUser.getIdUtilisateur(), demandeDto.getIdExperimentation(), demandeDto.getRolePourCetteExpe());
         }
+        return savedUser;
+    }
 
-        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
+    // ACTION B : Ajout de mission seule (Utilisateur déjà existant)
+    @Transactional
+    public DemandeInscriptionExpe ajouterMissionAUtilisateur(Long idUser, Long idExpe, Role role) {
+        Utilisateur user = utilisateurRepository.findById(idUser).orElseThrow();
+        Experimentation expe = experimentationRepository.findById(idExpe).orElseThrow();
 
+        DemandeInscriptionExpe demande = new DemandeInscriptionExpe();
+        demande.setUtilisateur(user);
+        demande.setExperimentation(expe);
+        demande.setRolePourCetteExpe(role);
+        demande.setStatut(Statut.EN_ATTENTE);
+        demande.setDateDemande(LocalDateTime.now());
 
-        if (profilPro != null) {
-            profilPro.setUtilisateur(savedUtilisateur);
-            professionnelRepository.save(profilPro);
-        }
+        return demandeRepository.save(demande);
+    }
 
-        if (profilNonPro != null) {
-            profilNonPro.setUtilisateur(savedUtilisateur);
-            nonProfessionnelRepository.save(profilNonPro);
-        }
-
-        // Dans UtilisateurService.java
-   
-    
-    // Vérification de sécurité pour le rôle
-    // Dans ton bloc if (demandeExpe != null ...) de UtilisateurService
-if (demandeExpe != null && demandeExpe.getIdExperimentation() != null) {
-    Experimentation expe = experimentationRepository.findById(demandeExpe.getIdExperimentation())
-            .orElseThrow(() -> new RuntimeException("Expe introuvable"));
-
-    DemandeInscriptionExpe nouvelleDemande = new DemandeInscriptionExpe();
-    nouvelleDemande.setUtilisateur(savedUtilisateur);
-    nouvelleDemande.setExperimentation(expe);
-    nouvelleDemande.setDateDemande(LocalDateTime.now());
-    nouvelleDemande.setStatut(Statut.EN_ATTENTE);
-
-    // --- ON RÉCUPÈRE LE RÔLE ---
-    // On s'assure que le DTO nous donne bien un objet de type Role
-    nouvelleDemande.setRolePourCetteExpe(demandeExpe.getRolePourCetteExpe());
-
-    demandeRepository.save(nouvelleDemande);
-}
-
-        return savedUtilisateur;
+    // Vérification simple pour le Front
+    public Optional<Utilisateur> verifierExistence(String nom, String prenom, Date date) {
+        return utilisateurRepository.findByNomAndPrenomAndDateNaissance(nom, prenom, date);
     }
 }

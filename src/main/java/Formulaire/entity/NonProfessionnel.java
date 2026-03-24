@@ -1,9 +1,18 @@
 package Formulaire.entity;
 
-import Formulaire.entity.MomentJournee;
-import jakarta.persistence.*;
-import lombok.*;
-import java.util.Date;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Table(name = "non_professionnel")
@@ -18,10 +27,6 @@ public class NonProfessionnel {
     @MapsId 
     @JoinColumn(name = "id_utilisateur", nullable = false)
     private Utilisateur utilisateur;
-    
-    @NonNull
-    @Column(nullable = false)
-    private Date dateNaissance;
 
     @Enumerated(EnumType.STRING) 
     @Column(nullable = false)
