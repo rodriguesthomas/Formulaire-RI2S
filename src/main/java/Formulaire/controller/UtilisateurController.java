@@ -49,7 +49,7 @@ public class UtilisateurController {
         return ResponseEntity.ok(Map.of("existe", false));
     }
 
-    @GetMapping
+    @GetMapping("/liste")
     public ResponseEntity<?> lister() {
         return ResponseEntity.ok(utilisateurService.listerTousLesUtilisateurs());
     }
