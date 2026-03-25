@@ -28,6 +28,11 @@ public class UtilisateurController {
 
     @Autowired private UtilisateurService utilisateurService;
 
+    @GetMapping("/ping")
+public String ping() {
+    return "Le controller Utilisateur est bien chargé !";
+}
+
     @PostMapping("/inscription")
     public ResponseEntity<?> inscrire(@RequestBody InscriptionRequest request) {
         return ResponseEntity.ok(utilisateurService.inscrireUtilisateur(
