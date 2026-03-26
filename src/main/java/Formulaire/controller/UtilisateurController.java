@@ -69,6 +69,7 @@ public class UtilisateurController {
             map.put("telephone", u.getTelephone());
             map.put("email", u.getEmail());
             map.put("profilNonPro", u.getProfilNonPro());
+            map.put("profilPro", u.getProfilPro());
             return map;
         }).toList();
     }

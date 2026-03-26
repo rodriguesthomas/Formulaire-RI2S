@@ -41,4 +41,5 @@ private Utilisateur utilisateur;
 
     @Enumerated(EnumType.STRING)
     private Role rolePourCetteExpe; 
+
 }

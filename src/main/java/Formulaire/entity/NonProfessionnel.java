@@ -40,7 +40,7 @@ public class NonProfessionnel {
     @CollectionTable(name = "utilisateur_moments", joinColumns = @JoinColumn(name = "id_utilisateur"))
     @Enumerated(EnumType.STRING)
     @Column(name = "moment")
-    private Set<MomentJournee> momentsJournee; // Change List en Set ici
+    private Set<MomentJournee> momentsJournee; 
 
     @NonNull
     @Column(nullable = false)
