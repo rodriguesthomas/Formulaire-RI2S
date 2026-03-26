@@ -1,19 +1,8 @@
 package Formulaire.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,11 +17,11 @@ public class Professionnel {
     @Id
     private Long idUtilisateur; // Prendra automatiquement l'ID de l'utilisateur
 
-    @OneToOne
-    @MapsId // Indique que la clé primaire est la même que celle de la relation
-    @JoinColumn(name = "id_utilisateur", nullable = false)
-    @JsonBackReference
-    private Utilisateur utilisateur;
+    // @OneToOne
+    // @MapsId // Indique que la clé primaire est la même que celle de la relation
+    // @JoinColumn(name = "id_utilisateur", nullable = false)
+    // @JsonBackReference
+    // private Utilisateur utilisateur;
     
     @NonNull
     @Column(nullable = false)
@@ -46,8 +35,8 @@ public class Professionnel {
     @Column(nullable = false)
     private String participationExpe;
 
-    @OneToMany(mappedBy = "professionnel", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<NonProfessionnel> contactsNonPro = new ArrayList<>();
+    // @OneToMany(mappedBy = "professionnel", cascade = CascadeType.ALL)
+    // @JsonIgnore
+    // private List<NonProfessionnel> contactsNonPro = new ArrayList<>();
 
 }
