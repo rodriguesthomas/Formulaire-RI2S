@@ -1,8 +1,13 @@
 package Formulaire.entity;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column; // Importe tout ce qui commence par @ (Entity, Table, Id, etc.)
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,13 +20,13 @@ import lombok.NonNull;
 public class Professionnel {
     
     @Id
-    private Long idUtilisateur; // Prendra automatiquement l'ID de l'utilisateur
+    private Long idUtilisateur;
 
-    // @OneToOne
-    // @MapsId // Indique que la clé primaire est la même que celle de la relation
-    // @JoinColumn(name = "id_utilisateur", nullable = false)
-    // @JsonBackReference
-    // private Utilisateur utilisateur;
+    @OneToOne
+    @MapsId 
+    @JoinColumn(name = "id_utilisateur", nullable = false)
+    @JsonBackReference
+    private Utilisateur utilisateur;
     
     @NonNull
     @Column(nullable = false)
@@ -34,9 +39,4 @@ public class Professionnel {
     @NonNull
     @Column(nullable = false)
     private String participationExpe;
-
-    // @OneToMany(mappedBy = "professionnel", cascade = CascadeType.ALL)
-    // @JsonIgnore
-    // private List<NonProfessionnel> contactsNonPro = new ArrayList<>();
-
 }
