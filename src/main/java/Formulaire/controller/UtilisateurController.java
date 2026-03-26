@@ -55,24 +55,9 @@ public class UtilisateurController {
 
     @GetMapping
     public ResponseEntity<?> lister() {
-        // On utilise exactement la même logique que /simple qui fonctionne
-        List<Map<String, Object>> result = utilisateurRepository.findAll().stream().map(u -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", u.getIdUtilisateur());
-            map.put("nom", u.getNom());
-            map.put("prenom", u.getPrenom());
-            map.put("email", u.getEmail());
-            map.put("telephone", u.getTelephone());
-            map.put("consentement", u.getConsentement());
-            map.put("dateNaissance", u.getDateNaissance());
-            map.put("profilNonPro", u.getProfilNonPro());
-            map.put("profilPro", u.getProfilPro());
-            map.put("missions", u.getDemandesExperimentations()); // On ajoute les missions ici
-            return map;
-        }).toList();
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(utilisateurService.listerTousLesUtilisateurs());
     }
+
     @GetMapping("/simple2")
     public ResponseEntity<?> listerSimple2() {
         // On utilise exactement la même logique que /simple qui fonctionne
@@ -87,6 +72,7 @@ public class UtilisateurController {
             map.put("dateNaissance", u.getDateNaissance());
             map.put("profilNonPro", u.getProfilNonPro());
             map.put("profilPro", u.getProfilPro());
+            map.put("missions", u.getDemandesExperimentations()); // On ajoute les missions ici
             return map;
         }).toList();
 
