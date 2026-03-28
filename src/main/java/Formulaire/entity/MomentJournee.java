@@ -1,5 +1,5 @@
 package Formulaire.entity;
 
 public enum MomentJournee {
-    MATIN, APRES_MIDI, SOIR
+    MATIN, MIDI, APRES_MIDI, SOIR
 }
